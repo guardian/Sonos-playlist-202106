@@ -224,7 +224,7 @@ const Playlist = (props) => {
                 clearInterval(ti);
                 dispatch({type:ACTION_PAUSE_AUDIO, payload: true});
             }
-        })
+        }, 500)
         return () => {
             clearInterval(ti);
         }        
