@@ -112,6 +112,7 @@ const AudioControl = () => {
                 aud2.loop = true;
                 setAudio2(aud2);
                 aud2.load();
+                aud2.muted = muted;
                 console.log('audio track', level, ntrack)
             } else {
                 aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
@@ -122,6 +123,7 @@ const AudioControl = () => {
     useEffect(()=> {
         aud.autoplay = true;
         aud.loop = true;
+        aud.muted = muted;
         // aud.load();
         // aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
     },[]);
