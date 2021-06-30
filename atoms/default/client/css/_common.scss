@@ -1,0 +1,32 @@
+.flex-container {
+    display: flex;
+    &.fl-col {
+        flex-direction: column;
+    }
+    &.fl-space-between {
+        justify-content: space-between;
+    }
+    &.fl-row {
+      flex-direction: row;
+    }
+    
+    &.fl-end {
+        justify-items: end;
+    }
+    &.fl-jc-end {
+        justify-content: flex-end;
+    }
+
+}
+
+.p-rel {
+    position: relative;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.fullh {
+    height: 100%;
+}
