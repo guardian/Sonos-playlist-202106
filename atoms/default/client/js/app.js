@@ -66,10 +66,12 @@ const AudioControl = () => {
     const [aud2, setAudio2] = useState(null);
     const [track, setTrack] = useState('')
     const muted = useSelector(s=>s.muted);
+    const dispatch = useDispatch();
 
     const pauseAudio = useSelector(s=>s.pauseAudio);
 
     useEffect(()=>{
+        console.log('audio pause check')
         if (pauseAudio) {
             gsap.killTweensOf(aud)
             gsap.to(aud, {duration: 1, volume: 0, onComplete: aud.pause});
@@ -77,7 +79,7 @@ const AudioControl = () => {
     },[pauseAudio])
 
     const toggleMute = () => {
-        useDispatch()({type:ACTION_SET_MUTED, payload: !muted});
+        dispatch({type:ACTION_SET_MUTED, payload: !muted});
     }
 
     useEffect(() => {
@@ -210,7 +212,7 @@ const Playlist = (props) => {
     });
 
     const content = useSelector(s=>s.content);
-
+    const dispatch = useDispatch();
     console.log("playlist", data);
 
     if (!data) return;
@@ -220,7 +222,7 @@ const Playlist = (props) => {
             if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
                 console.log('pause audio');
                 clearInterval(ti);
-                useDispatch()({type:ACTION_PAUSE_AUDIO, payload: true});
+                dispatch({type:ACTION_PAUSE_AUDIO, payload: true});
             }
         })
         return () => {
