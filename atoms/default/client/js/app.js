@@ -120,8 +120,8 @@ const AudioControl = () => {
     useEffect(()=> {
         aud.autoplay = true;
         aud.loop = true;
-        aud.load();
-        aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
+        // aud.load();
+        // aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
     },[]);
     // console.log('audioctrl', audioLayers);
 
