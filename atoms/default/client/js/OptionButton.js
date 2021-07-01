@@ -25,7 +25,7 @@ export default function OptionButton(props) {
   return (
       <animated.a
         ref={ref}
-        className="default-btn"
+        className="default-btn option-btn"
         style={{ transform: aminProps.xys.to(trans) }}
         onMouseLeave={() => set([0, 0, 1])}
         onMouseMove={(e) => {

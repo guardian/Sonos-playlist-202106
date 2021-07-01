@@ -53,8 +53,14 @@ ul.inline {
   }
 }
 
-#Live {
-  margin-top: 5vh;
+// #Live {
+//   margin-top: 5vh;
+// }
+
+.paid-for {
+  a svg {
+    width: 120px;
+  }
 }
 
 .text-bg {
@@ -94,7 +100,12 @@ ul.inline {
 
   // }
 // }
-
+a {
+  font-family: "Display Sans";
+  &:active {
+    color: white;
+  }
+}
 h1 {
   line-height: 1.1;
   font-family: "Display Sans";
@@ -145,6 +156,9 @@ q {
     white-space: nowrap;
     padding-left: 1rem;
   }
+  @include mq(desktop) {
+    margin-bottom: 0;
+  }
 }
 
 .tnc {
@@ -153,9 +167,9 @@ q {
   padding: 1rem;
 
   @include mq(desktop) {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    // position: fixed;
+    // bottom: 0;
+    // left: 0;
     margin: 0;
   
   }
@@ -216,7 +230,9 @@ main {
   }
 
 }
-
+.hide-overflow {
+  overflow: hidden;
+}
 .main-panel {
   display: flex;
   // justify-content: space-between;
@@ -229,13 +245,33 @@ main {
 
 .question-panel {
   // width: 100%;
+  h1 {
+    font-size: 5rem;
+  }
 }
 
 .intro-panel {
+  h2 {
+    font-weight: 800;
+    line-height: 1;
+    font-size: 36/16 + rem;
+  }
+  h1 {
+    margin-bottom: .6rem;
+    line-height: 0.75;
+    font-size: 44/16 + rem;
+  }
   @include mq(desktop) {
     background-color: #00000060;
     height: auto;
     padding: 2rem;
+
+    h1 {
+      font-size: 60/16 + rem;
+    }
+    h2 {
+      font-size: 48/16 + rem;
+    }
   }
 }
 
@@ -244,7 +280,7 @@ main {
   width: 100%;
   // height: 80%;
   @include mq(desktop) {
-    height: 60vh;
+    height: 80vh;
     width: 40vw;
   }
 }
@@ -258,35 +294,54 @@ main {
 }
 
 h1.shadowed {
-  color: #000000d1;
-  text-shadow: 0px 0px 2px white, -1px 0px 0px white, 0 -1px white, 0px 1px white;  
+  // text-shadow: 0px 0px 2px white, -1px 0px 0px white, 0 -1px white, 0px 1px white;  
+  color: white;
+  @supports (-webkit-text-stroke: 1px white) {
+    color: #000000d1;
+    -webkit-text-stroke: 1px white;
+  }
   font-weight: 300;
 }
 .default-btn {
   padding: 1rem;
-  background: #00000060;
+  background: #000000C0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  font-size: 24/16 + rem;
   // margin: 2rem 0;
   margin: 0.3rem 0;
-
+  font-weight: 600;
   &:only-child {
     margin: 2rem 0;
   }
+  @include mq(desktop) {
+    font-size: 30/16 + rem;
+  }
 }
+.start-btn {
+  @include mq(desktop) {
+    max-width: 250px;
+  }
+}
+
+
 .video-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 
   video,.image {
     object-fit: cover;
     width: 100%;
     height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
   }
   .image {
     background-size: cover;

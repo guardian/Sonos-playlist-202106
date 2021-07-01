@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import AudioPlayer from "../../../../shared/js/AudioPlayer";
 import DoubleArrowIcon from "./DoubleArrowIcon";
 import {SwitchTransition, Transition, TransitionGroup} from "react-transition-group";
-import { Muted, Unmuted } from "./Icons";
+import { Logo, Muted, Unmuted } from "./Icons";
 import OptionButton from "./OptionButton";
 
 window.store = store;
@@ -56,7 +56,10 @@ const PaidForBy = () => {
     return (
         <FlexContainer className="paid-for fl-col" >
             <p>Paid for by</p>
-            <a href={link} target='_blank'><img src={`${assetsPath}/logo.png`} width="82"/></a>
+            <a href={link} target='_blank'>
+                {/* <img src={`${assetsPath}/logo.png`} width="82"/> */}
+                <Logo />
+            </a>
         </FlexContainer>
     )
 }
@@ -183,7 +186,7 @@ const Layer0Panel = (props) => {
             <h2 dangerouslySetInnerHTML={setHtml(content.introSub)}></h2>
             <div dangerouslySetInnerHTML={setHtml(content.introBody)}></div>
 
-            <a href="#" role="button" className="default-btn" onClick={handleClick}><span dangerouslySetInnerHTML={setHtml(content.introButton)}>Get started</span> <DoubleArrowIcon /></a>
+            <a href="#" role="button" className="default-btn start-btn" onClick={handleClick}><span dangerouslySetInnerHTML={setHtml(content.introButton)}>Get started</span> <DoubleArrowIcon /></a>
         </FlexContainer>
     )
 }
@@ -224,7 +227,6 @@ const Playlist = (props) => {
 
     const content = useSelector(s=>s.content);
     const dispatch = useDispatch();
-    console.log("playlist", data);
 
     if (!data) return;
 
@@ -289,43 +291,9 @@ const Header = () => {
                      <Layer1Panel options={options} title={store.content[`level${store.currentLevel}`]} />
                 )
         }
-        // return (
-        //     <Transition
-        //     // in={store.currentLevel}
-        //     onEnter={(n)=>{
-        //         gsap.from(n, {duration: 1, scale: 1.2});
-        //     }}
-        //     onExit={(n)=>{
-        //         gsap.to(n, {duration: 1, alpha: 0});
-        //     }}
-        //     unmountOnExit={true}
-        //     timeout={1000}
-        //     // appear={true}
-        //     >
-        //         {panel}
-        //     </Transition>
-        // )
+
     }
-    if (0) {
-    return (
-        <div className="fullh main-panel">
-
-        <FlexContainer className="fl-space-between">
-            <PaidForBy/>
-            <AudioControl />
-
-        </FlexContainer>
-
-        <ContentPanel className="">
-            <FlexContainer className="fullh">
-                {getLevel()}
-
-            </FlexContainer>
-
-        </ContentPanel>
-    </div>    
-    )
-    }
+    
     return (
         <div className="fullh main-panel">
 
@@ -336,7 +304,7 @@ const Header = () => {
             </FlexContainer>
 
             <ContentPanel className="">
-                <FlexContainer className="fullh">
+                <FlexContainer className="fullh hide-overflow">
                     <SwitchTransition >
                         <Transition
                             key={store.currentLevel}
@@ -401,15 +369,37 @@ const CenterPara = ({className, children}) =>
         {children}
     </div>
 
-const LoopingBgVid = ({src, image}) => 
-    <div className="video-bg">
-        {image &&
-        <div className="image" style={{backgroundImage: `url(<%= path %>/${image})`}} ></div>
+const LoopingBgVid = ({src}) => {
+    const level = useSelector(s=>s.currentLevel);
+    const content = useSelector(s=>s.content);
+    const vidRef = useRef();
+    const [loaded, setLoaded] = useState(0);
+
+    useEffect(()=>{
+        vidRef.current.oncanplaythrough = () => {
+            vidRef.current.oncanplaythrough = null;
+            setLoaded(n=>n+1);
         }
-        {src && 
-        <video src={`<%= path %>/${src}`} loop muted='true' autoPlay width="400" height="200" playsInline></video>
-        }
-    </div>
+    },[vidRef])
+
+    return (
+        <div className="video-bg">
+            <SwitchTransition mode="in-out">
+                <Transition
+                    key={level}
+                    timeout={1000}
+                    onEnter={n=>gsap.from(n,{alpha: 0, scale:1.2})}
+                    onExit={n=>gsap.to(n,{alpha:0})}
+                    mountOnEnter
+                    unmountOnExit
+                >
+                    <video ref={vidRef} src={`${assetsPath}/${content[`video${level}`]}`} loop muted='true' autoPlay width="400" height="200" playsInline></video>
+
+                </Transition>
+            </SwitchTransition>
+        </div>
+    )
+}
 
 const Youtube = ({videoId, title = 'Youtube player'}) =>
     <div className="yt-vid">
@@ -424,8 +414,6 @@ const Loading = () =>
 const Main = () => {
     const loaded = useSelector(s=>s.dataLoaded);
     
-    const mainRef = useRef();
-
     const dispatch = useDispatch();
 
     useEffect(()=>{
@@ -435,36 +423,14 @@ const Main = () => {
     if (!loaded) {
         return <Loading />;
     } else {
-        const contentData = useSelector(s=>s.sheets.content);
-        const cta = useSelector(s=>s.sheets.global[0].cta);
-        const globalData = useSelector(s=>s.sheets.global[0]);
-        const relatedItems = useSelector(s=>s.sheets.related);
+        const content = useSelector(s=>s.content);
+
         const store = useSelector(s=>s);
 
-        const [data, setData] = useState({});
 
-        const relatedList = relatedItems.map(v=>
-            <li>
-                <a href={v.link}>
-                    <img src={`<%= path %>/${v.image}`} alt=""/>
-                    <div dangerouslySetInnerHTML={setHtml(v.content)}></div>
-                </a>
-            </li>);
-
-        useEffect(() => {
-            const d = {cta};
-            contentData.forEach(v => d[v.key] = v.content)
-
-            setData(d);
-            // gsap.to(mainRef.current, {delay: 0.5, duration: 2, alpha: 1, ease: 'sine.out'});
-
-            
-        }, [])
         return (
-            <main ref={mainRef}>
-                {/* <ImagePanel image={`${assetsPath}/pic${store.currentLevel + 1}.png`} /> */}
-                {/* <ImagePanel image={`${assetsPath}/pic${1}.png`} /> */}
-                <LoopingBgVid src={`${assetsPath}/index.mp4`} />
+            <main>
+                <LoopingBgVid />
                 <Header />
             </main>
         );
