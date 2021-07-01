@@ -13,13 +13,19 @@ import {Provider, useSelector, useDispatch} from "react-redux";
 import { useEffect, useRef, useState } from "preact/hooks";
 import AudioPlayer from "../../../../shared/js/AudioPlayer";
 import DoubleArrowIcon from "./DoubleArrowIcon";
-import {Transition} from "react-transition-group";
+import {SwitchTransition, Transition, TransitionGroup} from "react-transition-group";
 import { Muted, Unmuted } from "./Icons";
+import OptionButton from "./OptionButton";
 
+window.store = store;
 
 const assetsPath = "<%= path %>";
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.defaults({
+    duration:1,
+    ease: 'sine.inOut'
+});
 
 const Container = ({children}) => {
     return (
@@ -74,7 +80,7 @@ const AudioControl = () => {
         console.log('audio pause check')
         if (pauseAudio) {
             gsap.killTweensOf(aud)
-            gsap.to(aud, {duration: 1, volume: 0, onComplete: aud.pause});
+            gsap.to(aud, {duration: 1, volume: 0, onComplete: () => aud.pause() });
         }
     },[pauseAudio])
 
@@ -155,7 +161,7 @@ const ContentPanel = ({className, children}) =>
 const Layer0Panel = (props) => {
     const dispatch = useDispatch();
     const globalData = useSelector(s=>s.sheets.global[0]);
-
+    console.log('create intro panel')
     const handleClick = (e) => {
         e.preventDefault();
         dispatch({type:ACTION_SET_LEVEL, payload: {level: 1, option: null}})
@@ -166,8 +172,8 @@ const Layer0Panel = (props) => {
     const content = useSelector(s=>s.content);
 
     useEffect(()=>{
-        console.log(elref.current)
-        gsap.from(elref.current, {alpha: 0, y: 20})
+        // console.log(elref.current)
+        // gsap.from(elref.current, {alpha: 0, y: 20})
     },[])
 
     return (
@@ -177,28 +183,31 @@ const Layer0Panel = (props) => {
             <h2 dangerouslySetInnerHTML={setHtml(content.introSub)}></h2>
             <div dangerouslySetInnerHTML={setHtml(content.introBody)}></div>
 
-            <a href="#" role="button" className="default-btn" onClick={handleClick} ref={el=>console.log('>>',el)}><span dangerouslySetInnerHTML={setHtml(content.introButton)}>Get started</span> <DoubleArrowIcon /></a>
+            <a href="#" role="button" className="default-btn" onClick={handleClick}><span dangerouslySetInnerHTML={setHtml(content.introButton)}>Get started</span> <DoubleArrowIcon /></a>
         </FlexContainer>
     )
 }
 const Layer1Panel = (props) => {
     const dispatch = useDispatch();
-    const data = useSelector(s=>s);
-    const curL = useSelector(s=>s.currentLevel);
+    // const data = useSelector(s=>s);
+    // const curL = useSelector(s=>s.currentLevel);
+    // const content = useSelector(s=>s.content);
 
     const handleClick = (v) => {
         dispatch({type:ACTION_SET_LEVEL, payload:{level: parseInt(v.link), option: v}})
     }
 
-    const elref = useRef();
+    // const elref = useRef();
 
     return (
 
         <FlexContainer className="fl-col question-panel panel-body">
-            <FancyHeader>Where are you?</FancyHeader>
+            <FancyHeader>{props.title}</FancyHeader>
                 {
-                    data.sheets.options.filter(v=> curL == v.group).map(v=>{
-                        return <a href="#" className="default-btn" key={v.key} onClick={(e)=>{e.preventDefault(); handleClick(v)}}>{v.label}</a>
+                    // data.sheets.options.filter(v=> curL == v.group).map(v=>{
+                    props.options.map(v=>{
+                        // return <a href="#" className="default-btn" key={v.key} onClick={(e)=>{e.preventDefault(); handleClick(v)}}>{v.label}</a>
+                        return <OptionButton key={v.key} selected={handleClick} label={v.label} data={v}/>;
                     })
                 }
         </FlexContainer>
@@ -262,16 +271,61 @@ const Header = () => {
     },[])
 
     const getLevel = () => {
+        let panel = null;
+        const options = store.sheets.options.filter(v=> store.currentLevel == v.group);
+
         switch (store.currentLevel) {
             case 0: 
-                return <Layer0Panel />
+                return (
+                    <Layer0Panel />
+                )
+                break;
             case 4:
-                return <Playlist />
+                    return <Playlist />
+                    break;
             default:
-                return <Layer1Panel />
-        }
-    }
+                return (
 
+                     <Layer1Panel options={options} title={store.content[`level${store.currentLevel}`]} />
+                )
+        }
+        // return (
+        //     <Transition
+        //     // in={store.currentLevel}
+        //     onEnter={(n)=>{
+        //         gsap.from(n, {duration: 1, scale: 1.2});
+        //     }}
+        //     onExit={(n)=>{
+        //         gsap.to(n, {duration: 1, alpha: 0});
+        //     }}
+        //     unmountOnExit={true}
+        //     timeout={1000}
+        //     // appear={true}
+        //     >
+        //         {panel}
+        //     </Transition>
+        // )
+    }
+    if (0) {
+    return (
+        <div className="fullh main-panel">
+
+        <FlexContainer className="fl-space-between">
+            <PaidForBy/>
+            <AudioControl />
+
+        </FlexContainer>
+
+        <ContentPanel className="">
+            <FlexContainer className="fullh">
+                {getLevel()}
+
+            </FlexContainer>
+
+        </ContentPanel>
+    </div>    
+    )
+    }
     return (
         <div className="fullh main-panel">
 
@@ -283,8 +337,25 @@ const Header = () => {
 
             <ContentPanel className="">
                 <FlexContainer className="fullh">
-
-                    {getLevel()}
+                    <SwitchTransition >
+                        <Transition
+                            key={store.currentLevel}
+                            onEnter={(n)=>{
+                                gsap.from(n, {duration: 1, scale: 1.2, alpha: 0, onComplete: ()=>{
+                                    gsap.set(n,{clearProps: 'all'});
+                                }});
+                            }}
+                            onExit={(n)=>{
+                                gsap.to(n, {duration: 1, alpha: 0, scale: 0.6});
+                            }}
+                            unmountOnExit={true}
+                            mountOnEnter={true}
+                            timeout={{enter:1000, exit:900}}
+                            appear={true}
+                            >
+                            {getLevel()}
+                        </Transition>
+                    </SwitchTransition>
 
                 </FlexContainer>
 
@@ -391,7 +462,9 @@ const Main = () => {
         }, [])
         return (
             <main ref={mainRef}>
-                <ImagePanel image={`${assetsPath}/pic${store.currentLevel + 1}.png`} />
+                {/* <ImagePanel image={`${assetsPath}/pic${store.currentLevel + 1}.png`} /> */}
+                {/* <ImagePanel image={`${assetsPath}/pic${1}.png`} /> */}
+                <LoopingBgVid src={`${assetsPath}/index.mp4`} />
                 <Header />
             </main>
         );
