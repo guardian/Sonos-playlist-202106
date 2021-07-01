@@ -320,7 +320,7 @@ h1.shadowed {
   }
 }
 .start-btn {
-  @include mq(desktop) {
+  @include mq(tablet) {
     max-width: 250px;
   }
 }
