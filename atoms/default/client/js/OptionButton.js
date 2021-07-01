@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { useSpring, animated, config } from "@react-spring/web";
 
 const calc = (x, y, rect) => [
-  -(y - rect.top - rect.height * .2) * .2,
-  (x - rect.left - rect.width * .2) * .05,
+  -(y - rect.top - rect.height * .2) * .1,
+  (x - rect.left - rect.width * .2) * .02,
   1.1
 ];
 const trans = (x, y, s) =>

@@ -107,7 +107,6 @@ const AudioControl = () => {
                     aud2.oncanplaythrough = null;
                     aud2.currentTime = aud.currentTime;
                     aud2.play();
-                    console.log('audiot loaded')
                     gsap.to(aud, {volume: 0, duration: 2, onComplete: () => {
                         aud.pause();
                     }})
@@ -122,7 +121,6 @@ const AudioControl = () => {
                 setAudio2(aud2);
                 aud2.load();
                 aud2.muted = muted;
-                console.log('audio track', level, ntrack)
             } else {
                 aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
             }
@@ -164,7 +162,7 @@ const ContentPanel = ({className, children}) =>
 const Layer0Panel = (props) => {
     const dispatch = useDispatch();
     const globalData = useSelector(s=>s.sheets.global[0]);
-    console.log('create intro panel')
+
     const handleClick = (e) => {
         e.preventDefault();
         dispatch({type:ACTION_SET_LEVEL, payload: {level: 1, option: null}})
@@ -408,7 +406,9 @@ const Youtube = ({videoId, title = 'Youtube player'}) =>
 
 const Loading = () => 
     <FlexContainer className="loading">
-        <img src='<%= path %>/logo.png' width="82"/>
+        <div style={{width: 300}}>
+            <Logo />
+        </div>
     </FlexContainer>
 
 const Main = () => {
@@ -419,6 +419,32 @@ const Main = () => {
     useEffect(()=>{
         dispatch( fetchData('https://interactive.guim.co.uk/docsdata/1E3p9RuXgwxZHhFjl4K5qmXnht2Sp7DSTgs3LOLXAXnY.json') );
     },[]);
+
+    const content = useSelector(s=>s.content);
+
+    const store = useSelector(s=>s);    
+
+    return (
+        <SwitchTransition>
+            <Transition
+                key={loaded}
+                timeout={1000}
+                onEnter={n=>gsap.from(n,{alpha: 0})}
+                onExit={n=>gsap.to(n,{alpha:0})}
+                mountOnEnter
+                unmountOnExit
+                appear={true}
+            >
+                {!loaded && <Loading />}
+                {loaded && 
+                    <main>
+                        <LoopingBgVid />
+                        <Header />
+                    </main>                    
+                }
+            </Transition>            
+        </SwitchTransition>
+    )
 
     if (!loaded) {
         return <Loading />;
