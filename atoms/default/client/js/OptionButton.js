@@ -12,7 +12,7 @@ const calc = (x, y, rect) => [
 const trans = (xys) => {
     
 // return {scale: s, rotateY: y}
-return {rotateX: xys[0], rotateY: xys[1], scale: xys[2], duration: 0.4, ease: 'sine.out', rotateZ: 0.01}
+return {rotateX: xys[0], rotateY: xys[1], scale: xys[2], duration: 0.2, ease: 'sine.out', rotateZ: 0.01}
 }
 //   `perspective(600px) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
 
