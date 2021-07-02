@@ -154,10 +154,13 @@ q {
   margin-bottom: 1rem;
   span {
     white-space: nowrap;
-    padding-left: 1rem;
+    padding-right: 1rem;
   }
   @include mq(desktop) {
     margin-bottom: 0;
+    span {
+      padding-left: 1rem;
+    }
   }
 }
 
@@ -233,7 +236,7 @@ main {
 
 }
 .hide-overflow {
-  overflow: hidden;
+  // overflow: hidden;
 }
 .main-panel {
   display: flex;
