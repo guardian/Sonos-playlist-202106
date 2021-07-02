@@ -28,7 +28,7 @@ export default function OptionButton(props) {
   }
 
   return (
-      <animated.a
+      <a
         ref={ref}
         className="default-btn option-btn"
         // style={{ transform: aminProps.xys.to(trans) }}
@@ -42,6 +42,6 @@ export default function OptionButton(props) {
           gsap.to(ref.current, trans(calc(e.clientX, e.clientY, rect)));
         }}
         onClick={handleClick}
-      >{props.label}</animated.a>
+      >{props.label}</a>
   );
 }
