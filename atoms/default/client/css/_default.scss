@@ -222,6 +222,8 @@ main {
   height: 100%;
   justify-content: flex-end;
   width: 100%;
+  perspective: 600px;
+  transform-style: preserve-3d;
   @include mq(desktop) {
     justify-content: center;
     margin: auto;
