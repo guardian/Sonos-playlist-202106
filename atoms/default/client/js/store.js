@@ -52,10 +52,14 @@ const rootReducer = (state = initialState, action) => {
             return {...state, pauseAudio: action.payload};
         case ACTION_SET_LEVEL:
             let ops = [...state.audioLayers];
+            if (ops.length > action.payload.level) {
+                ops = ops.slice(0, action.payload.level + 1);
+            }
             if (action.payload.option) ops[action.payload.level - 1] = action.payload.option;
             else if (ops.length > 1) {
                 ops.pop();
             }
+            // console.log('audio layers', ops, state.currentLevel, action.payload.level );
             return {...state, currentLevel: action.payload.level, audioLayers: ops};
         default:
             return state;
