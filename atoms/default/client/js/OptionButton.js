@@ -30,7 +30,7 @@ export default function OptionButton(props) {
   return (
       <a
         ref={ref}
-        className="default-btn option-btn"
+        className={props.className}
         // style={{ transform: aminProps.xys.to(trans) }}
         // onMouseLeave={() => set([0, 0, 1])}
         onMouseLeave={() => gsap.to(ref.current, trans([0, 0, 1]))}

@@ -4,10 +4,10 @@ import thunk from "redux-thunk";
 const initialState = {
     dataLoaded: false,
     sheets: null,
-    audioLayers: [],
+    audioLayers: [null],
     currentLevel: 0,
     muted: false,
-    pauseAudio: false,
+    pauseAudio: 0,
     content: {}
 };
 
@@ -51,8 +51,11 @@ const rootReducer = (state = initialState, action) => {
         case ACTION_PAUSE_AUDIO:
             return {...state, pauseAudio: action.payload};
         case ACTION_SET_LEVEL:
-            const ops = [...state.audioLayers];
-            ops[state.currentLevel] = action.payload.option;
+            let ops = [...state.audioLayers];
+            if (action.payload.option) ops[action.payload.level - 1] = action.payload.option;
+            else if (ops.length > 1) {
+                ops.pop();
+            }
             return {...state, currentLevel: action.payload.level, audioLayers: ops};
         default:
             return state;
@@ -64,7 +67,7 @@ export const fetchData = (url) => {
         fetch(`${url}?t=${new Date().getTime()}`)
             .then(resp=> resp.json())
             .then((d)=>{
-                console.log(d);
+                // console.log(d);
                 dispatch(setSheets(d.sheets));
                 dispatch(setDataLoaded());
 

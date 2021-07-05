@@ -61,6 +61,10 @@ ul.inline {
   a svg {
     width: 120px;
   }
+  text-shadow: 0 0 10px #00000080;
+  svg {
+    filter: drop-shadow(0px 0px 10px #00000080);
+  }  
 }
 
 .text-bg {
@@ -159,7 +163,7 @@ q {
   @include mq(desktop) {
     margin-bottom: 0;
     span {
-      padding-left: 1rem;
+      // padding-left: 1rem;
     }
   }
 }
@@ -253,6 +257,11 @@ main {
   h1 {
     font-size: 5rem;
   }
+  nav {
+    transform-style: preserve-3d;
+    margin-top: 1rem;
+    display: flex;
+  }  
 }
 
 .intro-panel {
@@ -284,10 +293,26 @@ main {
   min-height: 300/16 + rem;
   width: 100%;
   // height: 80%;
+  h1 {
+    font-weight: 800;
+    text-shadow: 0 0 10px #00000080;
+  }
   @include mq(desktop) {
     height: 80vh;
     width: 40vw;
   }
+
+  nav {
+    display: flex;
+    margin: 0 0 1rem;
+    padding: 0 0 1rem;
+  }
+
+  iframe {
+    min-height: 200px;
+  }
+
+
 }
 
 
@@ -323,6 +348,12 @@ h1.shadowed {
   @include mq(desktop) {
     font-size: 30/16 + rem;
   }
+}
+.back-btn {
+  background: #000000C0;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  display: block;
 }
 .start-btn {
   @include mq(tablet) {
@@ -487,6 +518,7 @@ header {
     justify-content: flex-end;
     padding: 2rem;
     color: white;
+
     img {
       display: inline-block;
       vertical-align: middle;

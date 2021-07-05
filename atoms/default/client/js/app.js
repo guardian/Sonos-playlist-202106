@@ -17,7 +17,7 @@ import {SwitchTransition, Transition, TransitionGroup} from "react-transition-gr
 import { Logo, Muted, Unmuted } from "./Icons";
 import OptionButton from "./OptionButton";
 
-window.store = store;
+// window.store = store;
 
 const assetsPath = "<%= path %>";
 
@@ -93,8 +93,11 @@ const AudioControl = () => {
 
     useEffect(() => {
         if (audioLayers.length) {
-            const ntrack = audioLayers.reduce((p,c,i)=>p? `${p}_${c.tag}`: c?c.tag : '', '');
-            if (track !== ntrack) {
+            let ntrack = audioLayers.reduce((p,c,i)=>p? `${p}_${c.tag}`: c?c.tag : '', '');
+            if (track != '' && ntrack == '') {
+                ntrack = baseTrack;
+            }
+            if (ntrack != '' && track !== ntrack) {
                 setTrack(ntrack);
                 if (aud2) {
                     gsap.killTweensOf(aud2);
@@ -116,12 +119,19 @@ const AudioControl = () => {
                     setAudio2(null);
                     
                 }
-                aud2.src = `${assetsPath}/audio/${level-1}_${ntrack}.mp3`;
+                if (level-1 < 1) {
+                    aud2.src = `${assetsPath}/audio/${baseTrack}.mp3`;
+                } else {
+                    aud2.src = `${assetsPath}/audio/${level-1}_${ntrack}.mp3`;
+
+                }
                 aud2.loop = true;
                 setAudio2(aud2);
                 aud2.load();
                 aud2.muted = muted;
             } else {
+                setTrack('');
+                // console.log('play base track')
                 aud.src = `${assetsPath}/audio/${baseTrack}.mp3`;
             }
         } 
@@ -197,6 +207,10 @@ const Layer1Panel = (props) => {
     const handleClick = (v) => {
         dispatch({type:ACTION_SET_LEVEL, payload:{level: parseInt(v.link), option: v}})
     }
+    const handleBackClick = (v) => {
+        // v.preventDefault();
+        dispatch({type:ACTION_SET_LEVEL, payload:{level: props.currentLevel-1, option: null}})
+    }
 
     // const elref = useRef();
 
@@ -208,8 +222,14 @@ const Layer1Panel = (props) => {
                     // data.sheets.options.filter(v=> curL == v.group).map(v=>{
                     props.options.map(v=>{
                         // return <a href="#" className="default-btn" key={v.key} onClick={(e)=>{e.preventDefault(); handleClick(v)}}>{v.label}</a>
-                        return <OptionButton key={v.key} selected={handleClick} label={v.label} data={v}/>;
+                        return <OptionButton className="default-btn option-btn" key={v.key} selected={handleClick} label={v.label} data={v}/>;
                     })
+                }
+                { props.currentLevel > 1 &&
+                   <nav>
+                       {/* <a href="#" className="back-btn" onClick={handleBackClick}>« Back</a> */}
+                       <OptionButton className="back-btn" selected={handleBackClick} label="« Back" />
+                   </nav>
                 }
         </FlexContainer>
     )
@@ -233,13 +253,18 @@ const Playlist = (props) => {
             if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
                 console.log('pause audio');
                 clearInterval(ti);
-                dispatch({type:ACTION_PAUSE_AUDIO, payload: true});
+                dispatch({type:ACTION_PAUSE_AUDIO, payload: Math.random()});
             }
         }, 500)
         return () => {
             clearInterval(ti);
         }        
     },[])
+
+    const handleBackClick = (v) => {
+        // v.preventDefault();
+        dispatch({type:ACTION_SET_LEVEL, payload:{level: 1, option: null}})
+    }    
 
     return (
         <FlexContainer className="fl-col playlist-panel panel-body">
@@ -249,6 +274,9 @@ const Playlist = (props) => {
                 <span>{content.sharePrompt}</span>
                 <SocialBar title={content.shareTitle} url={content.shareUrl} />
             </div>
+            <nav>
+                <OptionButton className="back-btn" selected={handleBackClick} label="Find another playlist »" />
+            </nav>
             <div className="tnc" dangerouslySetInnerHTML={setHtml(content.playlistFooter)}>
 
             </div>
@@ -281,12 +309,12 @@ const Header = () => {
                 )
                 break;
             case 4:
-                    return <Playlist />
+                    return <Playlist  currentLevel={store.currentLevel} />
                     break;
             default:
                 return (
 
-                     <Layer1Panel options={options} title={store.content[`level${store.currentLevel}`]} />
+                     <Layer1Panel options={options} title={store.content[`level${store.currentLevel}`]} currentLevel={store.currentLevel} />
                 )
         }
 
