@@ -278,13 +278,13 @@ const Playlist = (props) => {
             <h1>{data.title}</h1>
             <iframe src={data.link} width="100%" height="100%" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             <div className="tnc" dangerouslySetInnerHTML={setHtml(content.playlistFooter)} />
+            <nav>
+                <OptionButton className="back-btn" selected={handleBackClick} label="Find another playlist »" />
+            </nav>
             <div className="share">
                 <span>{content.sharePrompt}</span>
                 <SocialBar title={content.shareTitle} url={content.shareUrl} />
             </div>
-            <nav>
-                <OptionButton className="back-btn" selected={handleBackClick} label="Find another playlist »" />
-            </nav>
             
         </FlexContainer>
     )
