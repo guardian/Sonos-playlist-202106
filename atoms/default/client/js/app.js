@@ -243,17 +243,18 @@ const Layer1Panel = (props) => {
 }
 
 const Playlist = (props) => {
-    const data = useSelector(s=> {
-        const track = s.audioLayers.slice(0, s.audioLayers.length-1).reduce((p,c,i)=>p? `${p}_${c.tag}`: c?c.tag : '', '');
-        const li = s.sheets.playlists.filter(v => v.key === track);
+    const playlists = useSelector(s=>s.sheets.playlists);
+    
+    const data = (({audioLayers} = props) => {
+        const track = audioLayers.slice(0, audioLayers.length-1).reduce((p,c,i)=>p? `${p}_${c.tag}`: c?c.tag : '', '');
+        const li = playlists.filter(v => v.key === track);
+        // console.log('playlist data', li);
         if (li) return li[0];
         return null;
-    });
+    })();
 
     const content = useSelector(s=>s.content);
     const dispatch = useDispatch();
-
-    if (!data) return;
 
     useEffect(()=>{
         const ti = setInterval(()=>{
@@ -315,7 +316,7 @@ const Header = () => {
                 )
                 break;
             case 4:
-                    return <Playlist  currentLevel={store.currentLevel} />
+                    return <Playlist  currentLevel={store.currentLevel} audioLayers={store.audioLayers} />
                     break;
             default:
                 return (
