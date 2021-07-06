@@ -189,7 +189,7 @@ q {
   background-color: var(--purple);
 }
 
-main {
+div.main {
   position: relative;
   // opacity: 0;
   min-height: 95vh;
@@ -284,6 +284,7 @@ main {
     background-color: #00000060;
     height: auto;
     padding: 2rem;
+    margin-top: 10vh;
 
     h1 {
       font-size: 60/16 + rem;

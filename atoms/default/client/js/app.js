@@ -472,10 +472,10 @@ const Main = () => {
             >
                 {!loaded && <Loading />}
                 {loaded && 
-                    <main>
+                    <div className="main">
                         <LoopingBgVid />
                         <Header />
-                    </main>                    
+                    </div>                    
                 }
             </Transition>            
         </SwitchTransition>
