@@ -2,7 +2,7 @@
 // just do e.g. import Scatter from "shared/js/scatter.js"
 // if you want to import a module from shared/js then you can
 // just do e.g. import Scatter from "shared/js/scatter.js"
-import { render, h } from "preact";
+import { render, h, Fragment } from "preact";
 import SocialBar from 'shared/js/SocialShare';
 import {$, $$} from 'shared/js/util';
 import RelatedContent from "shared/js/RelatedContent";
@@ -50,16 +50,23 @@ const PaddedContainer = ({children, className}) => {
     )
 }
 
-const PaidForBy = () => {
+const PaidForBy = (props) => {
     const link = useSelector(s=>s.sheets.global[0].logoLink);
     
     return (
         <FlexContainer className="paid-for fl-col" >
-            <p>Paid for by</p>
-            <a href={link} target='_blank'>
-                {/* <img src={`${assetsPath}/logo.png`} width="82"/> */}
-                <Logo />
-            </a>
+            {props.currentLevel <= 0 &&
+                <Fragment>
+                    <p>Paid for by</p>
+                    <a href={link} target='_blank'>
+                        {/* <img src={`${assetsPath}/logo.png`} width="82"/> */}
+                        <Logo />
+                    </a>
+                </Fragment>
+            }
+            {props.currentLevel > 0 &&
+                <p>Listen everywhere</p>
+            }
         </FlexContainer>
     )
 }
@@ -270,6 +277,7 @@ const Playlist = (props) => {
         <FlexContainer className="fl-col playlist-panel panel-body">
             <h1>{data.title}</h1>
             <iframe src={data.link} width="100%" height="100%" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            <div className="tnc" dangerouslySetInnerHTML={setHtml(content.playlistFooter)} />
             <div className="share">
                 <span>{content.sharePrompt}</span>
                 <SocialBar title={content.shareTitle} url={content.shareUrl} />
@@ -277,9 +285,7 @@ const Playlist = (props) => {
             <nav>
                 <OptionButton className="back-btn" selected={handleBackClick} label="Find another playlist »" />
             </nav>
-            <div className="tnc" dangerouslySetInnerHTML={setHtml(content.playlistFooter)}>
-
-            </div>
+            
         </FlexContainer>
     )
 }
@@ -324,7 +330,7 @@ const Header = () => {
         <div className="fullh main-panel">
 
             <FlexContainer className="fl-space-between">
-                <PaidForBy/>
+                <PaidForBy currentLevel={store.currentLevel} />
                 <AudioControl />
 
             </FlexContainer>
