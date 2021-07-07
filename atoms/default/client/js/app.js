@@ -87,7 +87,7 @@ const AudioControl = () => {
     const pauseAudio = useSelector(s=>s.pauseAudio);
 
     useEffect(()=>{
-        console.log('audio pause check')
+        // console.log('audio pause check')
         if (pauseAudio) {
             gsap.killTweensOf(aud)
             gsap.to(aud, {duration: 1, volume: 0, onComplete: () => aud.pause() });
@@ -113,7 +113,7 @@ const AudioControl = () => {
                 }
                 const aud2 = new Audio();
                 aud2.oncanplaythrough = () => {
-                    console.log('playthrough', aud2.src)
+                    // console.log('playthrough', aud2.src)
                     aud2.oncanplaythrough = null;
                     aud2.currentTime = aud.currentTime;
                     aud2.play();
@@ -259,7 +259,7 @@ const Playlist = (props) => {
     useEffect(()=>{
         const ti = setInterval(()=>{
             if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
-                console.log('pause audio');
+                // console.log('pause audio');
                 clearInterval(ti);
                 dispatch({type:ACTION_PAUSE_AUDIO, payload: Math.random()});
             }
@@ -442,7 +442,7 @@ const Youtube = ({videoId, title = 'Youtube player'}) =>
 const Loading = () => 
     <FlexContainer className="loading">
         <div style={{width: 300}}>
-            <Logo />
+            <img src={`${assetsPath}/glab_logo.svg`} />
         </div>
     </FlexContainer>
 
@@ -458,6 +458,7 @@ const Main = () => {
     const content = useSelector(s=>s.content);
 
     const store = useSelector(s=>s);    
+    // return <Loading />;
 
     return (
         <SwitchTransition>

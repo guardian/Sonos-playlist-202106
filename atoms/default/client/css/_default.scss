@@ -3,6 +3,10 @@
   --brand-primary: #F7B500;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 figure.element {
   margin-top: 0 !important;
 }
@@ -106,6 +110,7 @@ ul.inline {
 // }
 a {
   font-family: "Display Sans";
+  cursor: pointer;
   &:active {
     color: white;
   }
@@ -464,7 +469,7 @@ p.feature {
 }
 
 .loading {
-  height: 60vh;
+  height: 100vh;
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
@@ -742,6 +747,9 @@ section {
       text-align: center;
     }
 
+    a {
+      box-sizing: content-box;
+    }
   }
   // #Footer .related {
   //   width: 100%;
